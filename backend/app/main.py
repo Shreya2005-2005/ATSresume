@@ -5,14 +5,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel
 
-from app.core.config import DATA_DIR
+from app.core.config import DATA_DIR, FRONTEND_ORIGINS
 from app.routers import ats, evidence, jd, matching, pdf, pipeline, report, research, runs
 
 app = FastAPI(title="Autonomous Resume & Application Agent")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=FRONTEND_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

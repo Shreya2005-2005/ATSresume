@@ -14,6 +14,5 @@ frontend/out/
 *.pid
 frontend/.env.local
 
-frontend/CLAUDE.md
 
 

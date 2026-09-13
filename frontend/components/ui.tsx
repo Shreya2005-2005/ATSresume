@@ -18,7 +18,7 @@ export function Card({
           src="/images/hero-ocean.jpg"
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover object-bottom"
         />
         <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" />
         <div className="relative z-10 p-5">{children}</div>

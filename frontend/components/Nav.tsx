@@ -22,7 +22,7 @@ export default function Nav() {
         src="/images/hero-ocean.jpg"
         alt=""
         aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover object-bottom"
       />
       <div className="absolute inset-0 bg-slate-950/75 backdrop-blur-sm" />
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-3 flex items-center gap-1 overflow-x-auto">

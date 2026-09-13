@@ -15,7 +15,7 @@ export default function HomePage() {
             src="/images/hero-ocean.jpg"
             alt=""
             aria-hidden="true"
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover object-bottom"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/10 to-transparent" />
           <div className="relative z-10 h-full flex flex-col justify-end px-8 md:px-12 py-14 text-white max-w-sm">

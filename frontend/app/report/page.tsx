@@ -501,7 +501,7 @@ export default function ReportPage() {
             src="/images/hero-ocean.jpg"
             alt=""
             aria-hidden="true"
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover object-bottom"
           />
           <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" />
           <div className="relative z-10 flex flex-col flex-1 min-h-0 p-5">

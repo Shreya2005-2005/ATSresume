@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{ profile.name }} - Resume</title>
+<style>
+  /* Root font-size is the single shrink knob the fit-to-page script below
+     adjusts; every other size is in rem so the whole layout scales with it
+     (real layout scaling, not just paint, so print pagination respects it
+     — unlike `zoom`, and unlike `transform: scale` which doesn't affect an
+     ancestor's layout size at all). 1rem = 14px ~= 10.5pt. */
+  html { font-size: 14px; }
+  @page { size: Letter; margin: 0.4in 0.5in; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-size: 1rem;
+    color: #1a1a1a;
+    line-height: 1.15;
+    margin: 0;
+  }
+  header { text-align: center; margin-bottom: 0.3rem; }
+  h1.name { font-size: 1.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 0.1rem 0; }
+  .contact-line { font-size: 0.88rem; color: #222; }
+  .contact-line a { color: #1a56c4; text-decoration: none; }
+  .contact-line span.sep { margin: 0 0.36rem; color: #888; }
+  section.summary { margin: 0.2rem 0 0.3rem 0; font-size: 0.92rem; text-align: left; color: #222; }
+  h2.section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    border-bottom: 1px solid #1a1a1a;
+    padding-bottom: 0.05rem;
+    margin: 0.32rem 0 0.14rem 0;
+  }
+  .entry { margin-bottom: 0.16rem; page-break-inside: avoid; }
+  .entry-compact { margin-bottom: 0.05rem; }
+  .entry-header { display: flex; justify-content: space-between; align-items: baseline; gap: 0.7rem; flex-wrap: wrap; }
+  .entry-title { font-weight: 700; font-size: 0.96rem; min-width: 40%; }
+  .entry-meta { display: flex; align-items: baseline; gap: 0.7rem; flex-wrap: wrap; justify-content: flex-end; }
+  .entry-skills { font-style: italic; font-size: 0.86rem; color: #333; }
+  .entry-date { font-size: 0.86rem; color: #444; white-space: nowrap; }
+  .entry-links { font-size: 0.82rem; margin-top: 0; line-height: 1; }
+  .entry-links a { color: #1a56c4; text-decoration: none; }
+  ul.bullets { margin: 0.07rem 0 0 0; padding-left: 1.2rem; }
+  ul.bullets li { margin-bottom: 0.03rem; }
+  .skills-line { font-size: 0.92rem; }
+  .skills-line strong { font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1 class="name">{{ profile.name }}</h1>
+  <div class="contact-line">
+    {{ profile.location }}<span class="sep">|</span>{{ profile.email }}<span class="sep">|</span>{{ profile.phone }}
+    {% for link in profile.links %}<span class="sep">|</span><a href="{{ link.url }}">{{ link.label }}</a>{% endfor %}
+  </div>
+</header>
+
+{% if summary %}
+<h2 class="section-title">Summary</h2>
+<section class="summary">{{ summary }}</section>
+{% endif %}
+
+{% for section_name, entries in sections.items() %}
+<h2 class="section-title">{{ section_name }}</h2>
+{% for entry in entries %}
+<div class="entry">
+  <div class="entry-header">
+    <span class="entry-title">{{ entry.title }}</span>
+    <span class="entry-meta">
+      {% if entry.skills %}<span class="entry-skills">{{ entry.skills | join(', ') }}</span>{% endif %}
+      {% if entry.date_range %}<span class="entry-date">{{ entry.date_range }}</span>{% endif %}
+    </span>
+  </div>
+  {% if entry.source_link %}
+  <div class="entry-links"><a href="{{ entry.source_link }}">{{ 'GitHub' if 'github.com' in entry.source_link else 'Link' }}</a></div>
+  {% endif %}
+  <ul class="bullets"><li>{{ entry.text }}</li></ul>
+</div>
+{% endfor %}
+{% endfor %}
+
+{% if skills %}
+<h2 class="section-title">Skills</h2>
+<div class="skills-line">{{ skills | join(', ') }}</div>
+{% endif %}
+
+{% if education %}
+<h2 class="section-title">Education</h2>
+{% for e in education %}
+<div class="entry{{ '' if e.metrics else '-compact' }}">
+  <div class="entry-header">
+    <span class="entry-title">{{ e.title }}</span>
+    {% if e.date_range %}<span class="entry-date">{{ e.date_range }}</span>{% endif %}
+  </div>
+  {% if e.metrics %}<ul class="bullets"><li>{{ e.metrics }}</li></ul>{% endif %}
+</div>
+{% endfor %}
+{% endif %}
+
+{% if certifications %}
+<h2 class="section-title">Certifications</h2>
+{% for c in certifications %}
+<div class="entry-compact">
+  <div class="entry-header">
+    <span class="entry-title">{{ c.title }}</span>
+    {% if c.date_range %}<span class="entry-date">{{ c.date_range }}</span>{% endif %}
+  </div>
+</div>
+{% endfor %}
+{% endif %}
+
+<script>
+  // Guarantee a single printed page: shrink the root font-size (every other
+  // size is in rem, so this is a real layout resize, not just a paint
+  // effect) until the document fits the Letter page's usable content area
+  // (11in - 2*0.5in margin = 10in @ 96 CSS px/in). Only shrinks; resumes
+  // that already fit are left at the default 14px root size.
+  (function () {
+    var html = document.documentElement;
+    var targetPx = 10.2 * 96;
+    var size = 14;
+    var minSize = 8;
+    while (document.body.scrollHeight > targetPx && size > minSize) {
+      size -= 0.2;
+      html.style.fontSize = size + 'px';
+    }
+  })();
+</script>
+
+</body>
+</html>

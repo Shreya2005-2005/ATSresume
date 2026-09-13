@@ -1,0 +1,16 @@
+{
+  "name": "Jordan Lee",
+  "email": "jordan.lee@example.com",
+  "phone": "+91 6294973887",
+  "location": "Remote",
+  "links": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/candidate"
+    },
+    {
+      "label": "LinkedIn",
+      "url": "https://linkedin.com/in/candidate"
+    }
+  ]
+}

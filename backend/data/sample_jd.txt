@@ -1,0 +1,28 @@
+Backend Engineer — Platform Team
+Company: Quillhaven Analytics
+
+About the role:
+Quillhaven Analytics is hiring a Backend Engineer to join our Platform team, building the
+APIs and infrastructure that power our customer-facing analytics product. You will
+work closely with SRE to operate our services in production.
+
+Requirements:
+- 5+ years of professional software engineering experience
+- 5+ years of production Kubernetes experience, including operating and debugging
+  live clusters
+- Strong proficiency in Python and experience building REST APIs (FastAPI or
+  similar)
+- Experience with PostgreSQL or another relational database
+- Solid understanding of CI/CD pipelines and infrastructure-as-code
+- Excellent communication skills and ability to work cross-functionally
+
+Nice to have:
+- Experience with Go
+- Familiarity with the Helm ecosystem
+- AWS or other public cloud certification
+
+Responsibilities:
+- Design, build, and operate REST APIs serving our analytics dashboard
+- Own production Kubernetes workloads: deployments, scaling, incident response
+- Improve CI/CD pipelines for faster, safer releases
+- Collaborate with frontend and data teams on new features

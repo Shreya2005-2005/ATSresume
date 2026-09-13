@@ -1,0 +1,12 @@
+{
+  "quillhaven analytics": [
+    "Quillhaven Analytics builds a customer-facing analytics dashboard product used by mid-market SaaS companies.",
+    "Their platform team runs customer workloads on Kubernetes and emphasizes operational ownership by backend engineers.",
+    "The company positions itself around fast, reliable analytics at scale rather than breadth of features.",
+    "Engineering culture emphasizes cross-functional collaboration between backend, frontend, and data teams."
+  ],
+  "example corp": [
+    "Example Corp is a placeholder entry included to demonstrate the static fallback knowledge base.",
+    "Used automatically when no Tavily API key is configured and the company is not otherwise recognized."
+  ]
+}

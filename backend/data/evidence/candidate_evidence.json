@@ -1,0 +1,316 @@
+[
+  {
+    "id": "work_3",
+    "type": "work_experience",
+    "title": "Backend Intern, Vertex Labs",
+    "description": "Implemented a webhook ingestion service in Node.js that normalized events from three third-party billing providers",
+    "metrics": "Service processed roughly 20,000 webhook events per day in production during the internship",
+    "skills": [
+      "Node.js",
+      "Express",
+      "MongoDB"
+    ],
+    "source_link": "resume.pdf#experience-vertex",
+    "date_range": "2022-05 to 2022-08"
+  },
+  {
+    "id": "proj_1",
+    "type": "project",
+    "title": "GitGPT \u2014 RAG-based repository chat assistant",
+    "description": "Personal project: a tool that ingests a GitHub repo, embeds source files into ChromaDB, and answers natural-language questions about the codebase using an LLM",
+    "metrics": "Indexed repos with 5,000+ files; open-sourced with 80+ GitHub stars",
+    "skills": [
+      "Python",
+      "ChromaDB",
+      "RAG",
+      "LLM integration",
+      "FastAPI"
+    ],
+    "source_link": "https://github.com/candidate/gitgpt",
+    "date_range": "2024-02 to present"
+  },
+  {
+    "id": "proj_2",
+    "type": "project",
+    "title": "Distributed task queue in Go",
+    "description": "Personal project: a Redis-backed distributed job queue with worker pools, retries, and a dashboard UI, written in Go",
+    "metrics": "Benchmarked at 3,000 jobs/sec on a single worker node in local testing",
+    "skills": [
+      "Go",
+      "Redis",
+      "concurrency",
+      "system design"
+    ],
+    "source_link": "https://github.com/candidate/go-taskqueue",
+    "date_range": "2023-08 to 2023-12"
+  },
+  {
+    "id": "proj_3",
+    "type": "project",
+    "title": "Realtime chat application",
+    "description": "Personal project: a WebSocket-based realtime chat app with presence indicators and message history, frontend in Next.js",
+    "metrics": null,
+    "skills": [
+      "Next.js",
+      "TypeScript",
+      "WebSockets",
+      "React"
+    ],
+    "source_link": "https://github.com/candidate/realtime-chat",
+    "date_range": "2022-11 to 2023-02"
+  },
+  {
+    "id": "oss_1",
+    "type": "open_source_pr",
+    "title": "Contributor, k9s (Kubernetes CLI dashboard, CNCF ecosystem project)",
+    "description": "Merged pull requests fixing UI rendering bugs, adding a resource filter feature, and improving log-tailing performance in k9s, a popular open-source terminal UI for Kubernetes clusters",
+    "metrics": "45+ merged pull requests over 18 months; became a recognized community contributor",
+    "skills": [
+      "Kubernetes API",
+      "Go",
+      "open source collaboration",
+      "kubectl ecosystem"
+    ],
+    "source_link": "https://github.com/derailed/k9s/pulls?q=author:candidate",
+    "date_range": "2023-03 to present"
+  },
+  {
+    "id": "oss_2",
+    "type": "open_source_pr",
+    "title": "Contributor, Helm charts community repo",
+    "description": "Submitted and merged fixes to Helm chart templates for a CNCF sandbox project's default deployment manifests",
+    "metrics": "6 merged pull requests",
+    "skills": [
+      "Helm",
+      "Kubernetes manifests",
+      "YAML"
+    ],
+    "source_link": "https://github.com/example/helm-charts/pulls?q=author:candidate",
+    "date_range": "2023-09 to 2024-01"
+  },
+  {
+    "id": "skill_1",
+    "type": "skill_note",
+    "title": "Containerization practice",
+    "description": "Dockerized every personal project listed above (GitGPT, task queue, chat app) and ran multi-container local setups with docker-compose; has never operated a production Kubernetes cluster",
+    "metrics": null,
+    "skills": [
+      "Docker",
+      "docker-compose"
+    ],
+    "source_link": "resume.pdf#skills",
+    "date_range": null
+  },
+  {
+    "id": "edu_1",
+    "type": "education",
+    "title": "B.Tech, Computer Science and Engineering",
+    "description": "Bachelor of Technology in Computer Science and Engineering",
+    "metrics": "CGPA 8.4/10",
+    "skills": [
+      "data structures",
+      "algorithms",
+      "operating systems",
+      "databases"
+    ],
+    "source_link": "resume.pdf#education",
+    "date_range": "2020 to 2024"
+  },
+  {
+    "id": "cert_1",
+    "type": "certification",
+    "title": "AWS Certified Cloud Practitioner",
+    "description": "Holds the AWS Certified Cloud Practitioner certification",
+    "metrics": null,
+    "skills": [
+      "AWS",
+      "cloud fundamentals"
+    ],
+    "source_link": "resume.pdf#certifications",
+    "date_range": "2024-05"
+  },
+  {
+    "id": "skill_2",
+    "type": "skill_note",
+    "title": "Core language and framework proficiency",
+    "description": "Proficient in Python, TypeScript, and Go; comfortable across FastAPI, Next.js/React, and Node.js/Express stacks",
+    "metrics": null,
+    "skills": [
+      "Python",
+      "TypeScript",
+      "Go",
+      "FastAPI",
+      "Next.js",
+      "React",
+      "Node.js"
+    ],
+    "source_link": "resume.pdf#skills",
+    "date_range": null
+  },
+  {
+    "id": "proj_02789123",
+    "type": "project",
+    "title": "agent commerce adapter build for razorpay buildathon",
+    "description": "agent commerce adapter build for razorpay buildathon",
+    "metrics": null,
+    "skills": [],
+    "source_link": "https://github.com/Shreya2005-2005/Razorpay",
+    "date_range": null
+  },
+  {
+    "id": "edu_cc06d26a",
+    "type": "education",
+    "title": "B.Tech in Computer Science Engineering (AI/ML Specialization)",
+    "description": "Polaris School of Technology, Bangalore, Karnataka. JEE Mains 2025: 90.7 percentile \u2014 Class XII (ISC): 90.2% \u2014 Class X (ICSE): 96.2%",
+    "metrics": null,
+    "skills": [],
+    "source_link": null,
+    "date_range": "2025 \u2013 2029 (Expected)"
+  },
+  {
+    "id": "proj_2777221e",
+    "type": "project",
+    "title": "GitGPT \u2013 AI Developer Assistant",
+    "description": "Built a RAG pipeline (Cohere embeddings, ChromaDB) with a smart model-routing layer \u2013 general queries to Groq LLaMA 70B, coding queries to Qwen2.5-Coder-32B \u2013 plus SSE streaming for real-time responses. Live in production with real users; sub-2-second query response, 3 production issues self-resolved through structured logging and root-cause analysis.",
+    "metrics": null,
+    "skills": [
+      "Python",
+      "RAG",
+      "LLaMA 70B",
+      "FastAPI",
+      "Next.js",
+      "Cohere embeddings",
+      "ChromaDB",
+      "Groq",
+      "Qwen2.5-Coder-32B",
+      "SSE streaming"
+    ],
+    "source_link": "Live App\u00b7GitHub",
+    "date_range": "2026"
+  },
+  {
+    "id": "proj_b770251f",
+    "type": "project",
+    "title": "SentioAir \u2013 Multi-Horizon Air Quality Forecasting",
+    "description": "Trained and deployed 18 Random Forest models across 6 pollutants and 3 time horizons, edge-optimized with TFLite, with a statistical anomaly-detection layer. Delivered a complete, working system end to end \u2013 from raw sensor data to a live public dashboard a non-technical user actually trusts.",
+    "metrics": null,
+    "skills": [
+      "Python",
+      "scikit-learn",
+      "Random Forest",
+      "TFLite"
+    ],
+    "source_link": "Live App\u00b7GitHub",
+    "date_range": "2026"
+  },
+  {
+    "id": "proj_d74d5ddd",
+    "type": "project",
+    "title": "BTC Range Predictor \u2013 Statistical Forecasting System",
+    "description": "Built a walk-forward backtesting engine combining GARCH volatility modeling with 10,000-path Monte Carlo simulation and live Binance API ingestion. Achieved 96.8% confidence-interval coverage across 718 hourly bars with zero data leakage \u2013 validated statistically, not just visually plausible.",
+    "metrics": null,
+    "skills": [
+      "Python",
+      "GARCH",
+      "Monte Carlo",
+      "Binance API"
+    ],
+    "source_link": "Live App\u00b7GitHub",
+    "date_range": "2026"
+  },
+  {
+    "id": "oss_9fc9e6aa",
+    "type": "open_source_pr",
+    "title": "Kubescape (CNCF)",
+    "description": "Fixed goroutine leaks, mutex race conditions, and Prometheus metrics failures in production Kubernetes security tooling used by thousands of clusters globally \u2013 every change reviewed and merged by CNCF maintainers.",
+    "metrics": "32+ Merged PRs across kubescape/kubescape\u00b745+ in kubescape org\u00b711,000+ Stars",
+    "skills": [
+      "Go",
+      "Kubernetes",
+      "Goroutines",
+      "Prometheus"
+    ],
+    "source_link": null,
+    "date_range": "2026"
+  },
+  {
+    "id": "cert_2a2c0dad",
+    "type": "certification",
+    "title": "Python for Data Science (IBM)",
+    "description": "Certification in Python for Data Science.",
+    "metrics": null,
+    "skills": [],
+    "source_link": null,
+    "date_range": null
+  },
+  {
+    "id": "cert_576ea537",
+    "type": "certification",
+    "title": "Machine Learning with scikit-learn",
+    "description": "Certification in Machine Learning with scikit-learn.",
+    "metrics": null,
+    "skills": [],
+    "source_link": null,
+    "date_range": null
+  },
+  {
+    "id": "cert_d601b4f1",
+    "type": "certification",
+    "title": "SQL for Data Analysis",
+    "description": "Certification in SQL for Data Analysis.",
+    "metrics": null,
+    "skills": [],
+    "source_link": null,
+    "date_range": null
+  },
+  {
+    "id": "cert_42ad3252",
+    "type": "certification",
+    "title": "Git & GitHub Essentials",
+    "description": "Certification in Git & GitHub.",
+    "metrics": null,
+    "skills": [],
+    "source_link": null,
+    "date_range": null
+  },
+  {
+    "id": "achv_11d3452b",
+    "type": "achievement",
+    "title": "Scaler Ascent Hackathon 2025 \u2013 5th Place",
+    "description": "Achieved 5th place in the Scaler Ascent Hackathon 2025.",
+    "metrics": null,
+    "skills": [],
+    "source_link": null,
+    "date_range": null
+  },
+  {
+    "id": "achv_96d87e5a",
+    "type": "achievement",
+    "title": "Meta PyTorch OpenEnv Hackathon",
+    "description": "Built a spec-compliant RL environment.",
+    "metrics": null,
+    "skills": [],
+    "source_link": null,
+    "date_range": null
+  },
+  {
+    "id": "achv_a822273e",
+    "type": "achievement",
+    "title": "Flipkart GRiD 8.0 \u2013 Qualified past Round 1",
+    "description": "Qualified past Round 1 in Flipkart GRiD 8.0.",
+    "metrics": null,
+    "skills": [],
+    "source_link": null,
+    "date_range": null
+  },
+  {
+    "id": "achv_382af874",
+    "type": "achievement",
+    "title": "Adobe University Hackathon \u2013 Cleared Round 1",
+    "description": "Cleared Round 1 in Adobe University Hackathon.",
+    "metrics": null,
+    "skills": [],
+    "source_link": null,
+    "date_range": null
+  }
+]

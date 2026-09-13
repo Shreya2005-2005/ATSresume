@@ -17,9 +17,6 @@ export default function EvaluationPage() {
 
   if (!hasEvaluation) return <NoRunNotice />;
 
-  const statusTone =
-    state.final_status === "verified" ? "good" : state.final_status === "needs_human_review" ? "warn" : "bad";
-
   return (
     <div>
       <PageTitle>Evaluation Dashboard</PageTitle>
@@ -27,9 +24,6 @@ export default function EvaluationPage() {
       <div className="flex flex-wrap gap-8 mb-6">
         <ScoreGauge label="Compatibility" value={evaluation.compatibility_score} />
         {hasAts && <ScoreGauge label="ATS Score" value={ats.ats_score} />}
-        <div className="flex flex-col justify-center gap-2">
-          <Chip tone={statusTone}>{state.final_status}</Chip>
-        </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">

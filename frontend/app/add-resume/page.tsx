@@ -109,7 +109,7 @@ export default function AddResumePage() {
       {savedCount !== null && (
         <div className="mb-6 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 text-sm px-4 py-3">
           Added {savedCount} item{savedCount === 1 ? "" : "s"} to your Candidate Evidence Store.{" "}
-          <Link href="/" className="underline font-medium">
+          <Link href="/input" className="underline font-medium">
             View it on the Input page
           </Link>{" "}
           or upload another resume above.

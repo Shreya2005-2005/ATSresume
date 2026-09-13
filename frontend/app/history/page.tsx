@@ -4,12 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { RunSummary, fetchRuns, renameRun, resumePdfUrl } from "@/lib/api";
 import { useRun } from "@/lib/RunContext";
-import { Chip, PageTitle, EmptyState } from "@/components/ui";
-
-const STATUS_TONE: Record<string, "good" | "warn"> = {
-  verified: "good",
-  needs_human_review: "warn",
-};
+import { PageTitle, EmptyState } from "@/components/ui";
 
 export default function HistoryPage() {
   const router = useRouter();
@@ -108,9 +103,6 @@ export default function HistoryPage() {
                   ) : (
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-sm truncate">{run.company_name || "Untitled run"}</span>
-                      {run.final_status && (
-                        <Chip tone={STATUS_TONE[run.final_status] || "neutral"}>{run.final_status}</Chip>
-                      )}
                       <button
                         onClick={() => startEditing(run)}
                         title="Rename"

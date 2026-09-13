@@ -19,6 +19,15 @@ import { Card, PageTitle, NoRunNotice } from "@/components/ui";
 
 const SECTION_ORDER = ["Experience", "Projects", "Open Source", "Achievements"];
 
+// Education and certifications get their own dedicated block below (pulled
+// straight from the evidence store) with a cleaner one-line-per-entry
+// layout. A draft bullet whose section falls in here would otherwise also
+// render through the generic per-bullet loop and show up twice -- once
+// cleanly, once as a near-duplicate with a dangling empty bullet point
+// wherever the bullet's own `text` is blank (which it usually is for a
+// certification).
+const DEDICATED_SECTIONS = new Set(["certifications", "education"]);
+
 function newBulletId(): string {
   return `bullet-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -67,6 +76,7 @@ export default function ReportPage() {
     if (!draft) return [] as { name: string; bullets: ResumeBullet[] }[];
     const map = new Map<string, ResumeBullet[]>();
     for (const b of draft.bullets) {
+      if (DEDICATED_SECTIONS.has(b.section.trim().toLowerCase())) continue;
       if (!map.has(b.section)) map.set(b.section, []);
       map.get(b.section)!.push(b);
     }
@@ -389,6 +399,12 @@ export default function ReportPage() {
                             rows={2}
                             className="w-full text-sm border-b border-neutral-300 focus:outline-none focus:border-neutral-500"
                           />
+                          <input
+                            value={b.source_link ?? ""}
+                            onChange={(e) => updateBullet(b.id, { source_link: e.target.value || null })}
+                            placeholder="GitHub / live link (optional)"
+                            className="w-full text-xs border-b border-neutral-300 focus:outline-none focus:border-neutral-500"
+                          />
                         </div>
                       ) : (
                         <div>
@@ -415,9 +431,11 @@ export default function ReportPage() {
                               </a>
                             </div>
                           )}
-                          <ul className="list-disc list-inside text-sm text-neutral-800 mt-0.5">
-                            <li>{b.text}</li>
-                          </ul>
+                          {b.text && (
+                            <ul className="list-disc list-inside text-sm text-neutral-800 mt-0.5">
+                              <li>{b.text}</li>
+                            </ul>
+                          )}
                         </div>
                       )}
                     </div>
@@ -477,52 +495,62 @@ export default function ReportPage() {
           </div>
         </div>
 
-        <Card className="lg:sticky lg:top-4 flex flex-col max-h-[calc(100vh-2rem)]">
-          <h3 className="text-sm font-semibold mb-3">Ask the agent to edit this resume</h3>
+        <div className="relative overflow-hidden rounded-xl border border-white/10 shadow-sm lg:sticky lg:top-4 flex flex-col max-h-[calc(100vh-2rem)]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/hero-ocean.jpg"
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" />
+          <div className="relative z-10 flex flex-col flex-1 min-h-0 p-5">
+            <h3 className="text-sm font-semibold mb-3 text-white">Ask the agent to edit this resume</h3>
 
-          {chatMessages.length > 0 && (
-            <div className="flex-1 overflow-y-auto space-y-2 mb-3 pr-1 min-h-[100px]">
-              {chatMessages.map((m, i) => (
-                <div
-                  key={i}
-                  className={`text-sm rounded-lg px-3 py-2 ${
-                    m.role === "user"
-                      ? "bg-black/5 dark:bg-white/10"
-                      : m.role === "error"
-                      ? "bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-300"
-                      : "bg-emerald-50 dark:bg-emerald-900/10 text-emerald-800 dark:text-emerald-300"
-                  }`}
-                >
-                  {m.text}
-                </div>
-              ))}
+            {chatMessages.length > 0 && (
+              <div className="flex-1 overflow-y-auto space-y-2 mb-3 pr-1 min-h-[100px]">
+                {chatMessages.map((m, i) => (
+                  <div
+                    key={i}
+                    className={`text-sm rounded-lg px-3 py-2 ${
+                      m.role === "user"
+                        ? "bg-white/10 text-white"
+                        : m.role === "error"
+                        ? "bg-rose-900/40 text-rose-200"
+                        : "bg-emerald-900/30 text-emerald-200"
+                    }`}
+                  >
+                    {m.text}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="flex flex-col gap-2">
+              <textarea
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendChat();
+                  }
+                }}
+                placeholder="Tell the agent what to change..."
+                disabled={chatLoading}
+                rows={2}
+                className="w-full rounded-md border border-white/20 bg-black/20 text-white placeholder-white/50 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-white/30 disabled:opacity-50"
+              />
+              <button
+                onClick={handleSendChat}
+                disabled={chatLoading || !chatInput.trim()}
+                className="text-sm px-4 py-2 rounded-md bg-white text-black font-medium hover:opacity-90 disabled:opacity-50 self-end"
+              >
+                {chatLoading ? "Thinking..." : "Send"}
+              </button>
             </div>
-          )}
-
-          <div className="flex flex-col gap-2">
-            <textarea
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSendChat();
-                }
-              }}
-              placeholder="Tell the agent what to change..."
-              disabled={chatLoading}
-              rows={2}
-              className="w-full rounded-md border border-black/15 dark:border-white/20 bg-transparent px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20 disabled:opacity-50"
-            />
-            <button
-              onClick={handleSendChat}
-              disabled={chatLoading || !chatInput.trim()}
-              className="text-sm px-4 py-2 rounded-md bg-black text-white dark:bg-white dark:text-black font-medium hover:opacity-90 disabled:opacity-50 self-end"
-            >
-              {chatLoading ? "Thinking..." : "Send"}
-            </button>
           </div>
-        </Card>
+        </div>
         </div>
       )}
 

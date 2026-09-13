@@ -1,7 +1,30 @@
 import { ReactNode } from "react";
 import Link from "next/link";
 
-export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
+export function Card({
+  children,
+  className = "",
+  photo = false,
+}: {
+  children: ReactNode;
+  className?: string;
+  photo?: boolean;
+}) {
+  if (photo) {
+    return (
+      <div className={`relative overflow-hidden rounded-xl border border-white/10 shadow-sm text-white ${className}`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/images/hero-ocean.jpg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" />
+        <div className="relative z-10 p-5">{children}</div>
+      </div>
+    );
+  }
   return (
     <div
       className={`rounded-xl border border-black/10 dark:border-white/10 bg-white dark:bg-white/5 p-5 shadow-sm ${className}`}
@@ -75,7 +98,7 @@ export function NoRunNotice() {
   return (
     <EmptyState>
       No run selected yet.{" "}
-      <Link href="/" className="underline font-medium">
+      <Link href="/input" className="underline font-medium">
         Start a pipeline run
       </Link>{" "}
       from the Input page first.

@@ -1,20 +1,27 @@
-"""Shared Groq LLM client: JSON-mode calls validated against a Pydantic schema.
+"""Shared LLM clients: JSON-mode calls validated against a Pydantic schema.
 
 Used by every LLM-backed stage (JD parsing, recruiter scoring, XYZ rewrite,
 fact-check gate, ATS filter). Centralizing this keeps the "always request
 structured JSON, always validate before trusting it" rule in one place.
+
+Groq (call_llm_json) is the default for the pipeline's bulk stages -- fast
+and free-tier friendly. call_gemini_json is a second, stronger option for
+stages where instruction-following quality matters more than speed (e.g.
+the chat-based resume editor).
 """
 import json
 import time
 
+import requests
 from groq import BadRequestError, Groq, RateLimitError
 from pydantic import BaseModel, ValidationError
 
-from app.core.config import GROQ_API_KEY, GROQ_MODEL_HEAVY
+from app.core.config import GEMINI_API_KEY, GEMINI_MODEL, GROQ_API_KEY, GROQ_MODEL_HEAVY
 
 _client = None
 _RATE_LIMIT_MAX_RETRIES = 5
 _RATE_LIMIT_DEFAULT_BACKOFF = 2.0
+_GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
 
 def get_client() -> Groq:
@@ -122,5 +129,70 @@ def call_llm_json(
 
     raise LLMJSONError(
         f"Failed to get valid JSON matching {schema_model.__name__} after "
+        f"{max_retries + 1} attempts: {last_err}"
+    )
+
+
+def call_gemini_json(
+    system_prompt: str,
+    user_prompt: str,
+    schema_model: type[BaseModel],
+    model: str = GEMINI_MODEL,
+    temperature: float = 0.3,
+    max_retries: int = 2,
+    max_tokens: int = 4096,
+) -> BaseModel:
+    """Same contract as call_llm_json but against Google's Gemini API
+    (free tier via https://aistudio.google.com/apikey). Raises LLMJSONError
+    on any failure -- callers that want a Groq fallback should catch it."""
+    if not GEMINI_API_KEY:
+        raise LLMJSONError(
+            "GEMINI_API_KEY is not set. Get a free key from "
+            "https://aistudio.google.com/apikey and add it to backend/.env"
+        )
+
+    last_err = None
+    for attempt in range(max_retries + 1):
+        prompt = user_prompt
+        if attempt > 0:
+            prompt += (
+                f"\n\nYour previous response failed validation with this error: "
+                f"{last_err}\nReturn ONLY a single valid JSON object matching the "
+                f"required schema. No markdown, no commentary."
+            )
+        try:
+            resp = requests.post(
+                _GEMINI_ENDPOINT.format(model=model),
+                params={"key": GEMINI_API_KEY},
+                json={
+                    "system_instruction": {"parts": [{"text": system_prompt}]},
+                    "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+                    "generationConfig": {
+                        "temperature": temperature,
+                        "maxOutputTokens": max_tokens,
+                        "responseMimeType": "application/json",
+                    },
+                },
+                timeout=60,
+            )
+        except requests.RequestException as e:
+            last_err = str(e)
+            continue
+
+        if resp.status_code != 200:
+            last_err = f"Gemini API returned {resp.status_code}: {resp.text[:500]}"
+            continue
+
+        try:
+            data = resp.json()
+            raw = data["candidates"][0]["content"]["parts"][0]["text"]
+            parsed = json.loads(raw)
+            return schema_model.model_validate(parsed)
+        except (KeyError, IndexError, json.JSONDecodeError, ValidationError) as e:
+            last_err = str(e)
+            continue
+
+    raise LLMJSONError(
+        f"Failed to get valid JSON from Gemini matching {schema_model.__name__} after "
         f"{max_retries + 1} attempts: {last_err}"
     )

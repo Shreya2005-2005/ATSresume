@@ -87,11 +87,12 @@ def _entry_block(title: str, date_range: str, meta_line: str | None, link: tuple
     # title/meta/link/bullet block, matching how a hand-written resume
     # gives real weight to what matters and a single line to what doesn't.
     compact = len(body) <= _COMPACT_BODY_CHARS
-    lines = [
-        r"\noindent\textbf{%s} --- %s \hfill %s\\" % (esc(title), esc(body), esc(date_range))
-        if compact
-        else r"\noindent\textbf{%s} \hfill %s\\" % (esc(title), esc(date_range))
-    ]
+    if not body:
+        lines = [r"\noindent\textbf{%s} \hfill %s\\" % (esc(title), esc(date_range))]
+    elif compact:
+        lines = [r"\noindent\textbf{%s} --- %s \hfill %s\\" % (esc(title), esc(body), esc(date_range))]
+    else:
+        lines = [r"\noindent\textbf{%s} \hfill %s\\" % (esc(title), esc(date_range))]
     if meta_line:
         lines.append(r"\textit{%s}\\" % esc(meta_line))
     if link:

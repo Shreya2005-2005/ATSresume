@@ -18,6 +18,9 @@ GROQ_MODEL_HEAVY = os.getenv("GROQ_MODEL_HEAVY", "openai/gpt-oss-120b")
 GROQ_MODEL_LIGHT = os.getenv("GROQ_MODEL_LIGHT", "openai/gpt-oss-20b")
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")
 
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
+
 EVIDENCE_MATCH_CONFIDENCE_THRESHOLD = float(
     os.getenv("EVIDENCE_MATCH_CONFIDENCE_THRESHOLD", "0.5")
 )

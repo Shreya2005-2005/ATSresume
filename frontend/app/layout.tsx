@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Autonomous Resume Agent",
+  title: "Yours Resume",
   description: "Truthful, tailored, ATS-optimized resume generation with full traceability",
 };
 

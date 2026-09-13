@@ -76,7 +76,7 @@
   {% if entry.source_link %}
   <div class="entry-links"><a href="{{ entry.source_link }}">{{ 'GitHub' if 'github.com' in entry.source_link else 'Link' }}</a></div>
   {% endif %}
-  <ul class="bullets"><li>{{ entry.text }}</li></ul>
+  {% if entry.text %}<ul class="bullets"><li>{{ entry.text }}</li></ul>{% endif %}
 </div>
 {% endfor %}
 {% endfor %}

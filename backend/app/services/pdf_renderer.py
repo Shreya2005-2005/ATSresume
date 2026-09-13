@@ -46,6 +46,15 @@ def _load_profile() -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+# Education and certifications get their own dedicated block (pulled
+# straight from the evidence store, below) with a cleaner one-line-per-entry
+# layout. A bullet whose section falls in here would otherwise also render
+# through the generic per-bullet loop and show up twice -- once cleanly,
+# once as a near-duplicate with a dangling empty bullet point wherever the
+# bullet's own `text` is blank (which it usually is for a certification).
+_DEDICATED_SECTIONS = {"certifications", "education"}
+
+
 def assemble_resume_data(draft: ResumeDraft) -> dict:
     """Shared data assembly for every resume export format (HTML/PDF, LaTeX,
     ...): groups bullets into sections and pulls skills/education/
@@ -54,6 +63,8 @@ def assemble_resume_data(draft: ResumeDraft) -> dict:
 
     sections: dict[str, list] = {name: [] for name in SECTION_ORDER}
     for b in draft.bullets:
+        if b.section.strip().lower() in _DEDICATED_SECTIONS:
+            continue
         sections.setdefault(b.section, []).append(b)
 
     evidence = get_all_evidence()

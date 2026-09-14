@@ -7,7 +7,7 @@ const alexBrush = Alex_Brush({ subsets: ["latin"], weight: "400" });
 export default function HomePage() {
   return (
     <div>
-      <section className="relative overflow-hidden rounded-3xl shadow-2xl grid md:grid-cols-[6fr_4fr] min-h-[560px]">
+      <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen overflow-hidden grid md:grid-cols-[6fr_4fr] min-h-[560px]">
         {/* Left panel — free-license Unsplash underwater photo (photo-1668110648714) */}
         <div className="relative overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}

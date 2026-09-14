@@ -116,14 +116,22 @@ def delete_evidence_unit(evidence_id: str) -> bool:
     if len(remaining) == len(existing):
         return False
     path.write_text(json.dumps(remaining, indent=2), encoding="utf-8")
-    collection = get_collection()
-    collection.delete(ids=[evidence_id])
+    # Held for the whole get-then-delete, not just the lookup -- otherwise a
+    # concurrent ingest-default reset could delete the underlying ChromaDB
+    # collection between the two, leaving this call operating on a
+    # collection reference whose id no longer exists server-side.
+    with _lock:
+        collection = get_collection()
+        collection.delete(ids=[evidence_id])
     return True
 
 
 def query_evidence(query_text: str, top_k: int = 5) -> list[dict]:
-    collection = get_collection()
-    results = collection.query(query_texts=[query_text], n_results=top_k)
+    # Held for the whole get-then-query, not just the lookup -- see
+    # delete_evidence_unit's comment for why this matters under concurrency.
+    with _lock:
+        collection = get_collection()
+        results = collection.query(query_texts=[query_text], n_results=top_k)
     matches = []
     ids = results["ids"][0]
     docs = results["documents"][0]
@@ -144,8 +152,9 @@ def query_evidence(query_text: str, top_k: int = 5) -> list[dict]:
 
 
 def get_all_evidence() -> list[dict]:
-    collection = get_collection()
-    result = collection.get()
+    with _lock:
+        collection = get_collection()
+        result = collection.get()
     out = []
     for i, eid in enumerate(result["ids"]):
         out.append({"evidence_id": eid, "document": result["documents"][i], "metadata": result["metadatas"][i]})
@@ -155,8 +164,9 @@ def get_all_evidence() -> list[dict]:
 def get_by_ids(ids: list[str]) -> list[dict]:
     if not ids:
         return []
-    collection = get_collection()
-    result = collection.get(ids=ids)
+    with _lock:
+        collection = get_collection()
+        result = collection.get(ids=ids)
     out = []
     for i, eid in enumerate(result["ids"]):
         out.append({"evidence_id": eid, "document": result["documents"][i], "metadata": result["metadatas"][i]})

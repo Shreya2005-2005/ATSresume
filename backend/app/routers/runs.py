@@ -1,4 +1,6 @@
 import json
+import queue
+import threading
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse, PlainTextResponse, StreamingResponse
@@ -11,6 +13,8 @@ from app.services.state_store import list_runs, run_dir, load_state, save_state
 
 router = APIRouter(prefix="/runs", tags=["runs"])
 
+_HEARTBEAT_INTERVAL_S = 10
+
 
 class RunRequest(BaseModel):
     raw_jd: str
@@ -19,7 +23,35 @@ class RunRequest(BaseModel):
 @router.post("/stream")
 def stream_run(req: RunRequest):
     def event_stream():
-        for event in run_pipeline_stream(req.raw_jd):
+        # run_pipeline_stream does long blocking work (LLM calls, embedding
+        # computation) between yields -- on a slow host that gap can exceed
+        # an intermediary proxy's idle-connection timeout, silently killing
+        # the SSE stream (surfaces to the browser as a bare "Failed to
+        # fetch", with no error event ever received). Running the pipeline
+        # in a background thread and relaying its events through a queue
+        # lets this generator send a lightweight SSE comment (ignored by
+        # the client, but resets any proxy's "bytes seen recently" clock)
+        # whenever nothing real has happened in a while.
+        events: "queue.Queue" = queue.Queue()
+        sentinel = object()
+
+        def worker():
+            try:
+                for event in run_pipeline_stream(req.raw_jd):
+                    events.put(event)
+            finally:
+                events.put(sentinel)
+
+        threading.Thread(target=worker, daemon=True).start()
+
+        while True:
+            try:
+                event = events.get(timeout=_HEARTBEAT_INTERVAL_S)
+            except queue.Empty:
+                yield ": keep-alive\n\n"
+                continue
+            if event is sentinel:
+                break
             yield f"data: {json.dumps(event)}\n\n"
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")

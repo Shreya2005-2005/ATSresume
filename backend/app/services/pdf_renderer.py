@@ -11,6 +11,7 @@ libraries that aren't installed by default anywhere).
 """
 import json
 import tempfile
+import threading
 import uuid
 from pathlib import Path
 
@@ -25,6 +26,35 @@ TEMPLATE_DIR = BASE_DIR / "app" / "templates"
 SECTION_ORDER = ["Experience", "Projects", "Open Source", "Achievements"]
 
 _env = Environment(loader=FileSystemLoader(str(TEMPLATE_DIR)))
+
+# A fresh Chromium launch is the most memory- and CPU-expensive part of
+# rendering a PDF -- on a memory-constrained host, launching a brand-new
+# browser process per request (and never quite reclaiming it before the
+# next spikes on top) is what pushes total container memory over the
+# limit. Keeping one browser instance alive across requests and only
+# opening/closing a page per render avoids that repeated launch cost.
+# Playwright's sync API isn't safe to share across threads, so _lock also
+# serializes renders -- one at a time, which is fine at this usage scale.
+_lock = threading.Lock()
+_playwright = None
+_browser = None
+
+
+def _get_browser():
+    global _playwright, _browser
+    # is_connected() catches the case where the cached browser process died
+    # out from under us (e.g. an OOM kill on a memory-constrained host) --
+    # without this check, every render after that would keep failing
+    # against a reference to a browser that no longer exists.
+    if _browser is not None and not _browser.is_connected():
+        _browser = None
+    if _browser is None:
+        if _playwright is None:
+            _playwright = sync_playwright().start()
+        _browser = _playwright.chromium.launch(
+            args=["--disable-dev-shm-usage", "--disable-gpu"]
+        )
+    return _browser
 
 
 def _load_profile() -> dict:
@@ -92,17 +122,17 @@ def render_pdf(draft: ResumeDraft, output_path: Path) -> Path:
         html_path.write_text(html, encoding="utf-8")
 
         try:
-            with sync_playwright() as p:
-                browser = p.chromium.launch()
+            with _lock:
+                browser = _get_browser()
+                page = browser.new_page()
                 try:
-                    page = browser.new_page()
                     # The template's inline <script> synchronously shrinks
                     # the page to fit one sheet during parsing, so by the
                     # time goto() resolves (page 'load') it has already run.
                     page.goto(html_path.as_uri())
                     page.pdf(path=str(output_path))
                 finally:
-                    browser.close()
+                    page.close()
         except Exception as e:
             raise RuntimeError(
                 f"Chromium PDF rendering failed: {e}. If this is a fresh "

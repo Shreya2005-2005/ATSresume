@@ -31,17 +31,54 @@ _env = Environment(loader=FileSystemLoader(str(TEMPLATE_DIR)))
 # rendering a PDF -- on a memory-constrained host, launching a brand-new
 # browser process per request (and never quite reclaiming it before the
 # next spikes on top) is what pushes total container memory over the
-# limit. Keeping one browser instance alive across requests and only
-# opening/closing a page per render avoids that repeated launch cost.
-# Playwright's sync API isn't safe to share across threads, so _lock also
-# serializes renders -- one at a time, which is fine at this usage scale.
+# limit. Keeping one browser instance alive across back-to-back renders
+# and only opening/closing a page per render avoids that repeated launch
+# cost. But staying alive *forever* trades a temporary spike for a
+# permanent memory floor, which on a tight cap can be worse, not better --
+# so it's closed again after a stretch of no use, releasing that memory
+# back until the next render needs it. Playwright's sync API isn't safe to
+# share across threads, so _lock also serializes renders -- one at a time,
+# which is fine at this usage scale.
+_IDLE_CLOSE_S = 120
+
 _lock = threading.Lock()
 _playwright = None
 _browser = None
+_idle_timer: threading.Timer | None = None
+
+
+def _close_idle_browser():
+    global _playwright, _browser, _idle_timer
+    with _lock:
+        if _browser is not None:
+            try:
+                _browser.close()
+            except Exception:
+                pass
+            _browser = None
+        if _playwright is not None:
+            try:
+                _playwright.stop()
+            except Exception:
+                pass
+            _playwright = None
+        _idle_timer = None
+
+
+def _arm_idle_timer():
+    global _idle_timer
+    if _idle_timer is not None:
+        _idle_timer.cancel()
+    _idle_timer = threading.Timer(_IDLE_CLOSE_S, _close_idle_browser)
+    _idle_timer.daemon = True
+    _idle_timer.start()
 
 
 def _get_browser():
-    global _playwright, _browser
+    global _playwright, _browser, _idle_timer
+    if _idle_timer is not None:
+        _idle_timer.cancel()
+        _idle_timer = None
     # is_connected() catches the case where the cached browser process died
     # out from under us (e.g. an OOM kill on a memory-constrained host) --
     # without this check, every render after that would keep failing
@@ -133,6 +170,7 @@ def render_pdf(draft: ResumeDraft, output_path: Path) -> Path:
                     page.pdf(path=str(output_path))
                 finally:
                     page.close()
+                _arm_idle_timer()
         except Exception as e:
             raise RuntimeError(
                 f"Chromium PDF rendering failed: {e}. If this is a fresh "
